@@ -16,6 +16,7 @@ class CommentHandler {
       'security': this.securityScan.bind(this),
       'dependencies': this.checkDependencies.bind(this)
     };
+    this.lastCommandTime = new Map(); // Simple rate limiting
   }
 
   /**
@@ -32,13 +33,41 @@ class CommentHandler {
       return;
     }
 
+    // Prevent infinite loop by ignoring bot's own comments
+    // Check if the comment is from the bot itself or if it's a bot response
+    if (payload.comment.user.login === payload.sender.login || 
+        payload.comment.user.type === 'Bot' ||
+        payload.comment.body.includes('🤖') && payload.comment.body.includes('RobinRelay Bot')) {
+      console.log('🤖 Ignoring bot\'s own comment to prevent infinite loop');
+      return;
+    }
+
     console.log('💬 Bot mentioned in comment:', payload.comment.body);
     console.log(`👤 User: ${payload.comment.user.login}`);
     console.log(`🔗 Comment URL: ${payload.comment.html_url}`);
 
+    // Only process comments on pull requests, not issues
+    if (!payload.issue.pull_request) {
+      console.log('📝 Ignoring comment on issue (not a pull request)');
+      return;
+    }
+
     try {
       // Extract command from comment
       const command = this.extractCommand(comment, botMention);
+      
+      // Simple rate limiting - prevent spam
+      const userId = payload.comment.user.login;
+      const now = Date.now();
+      const lastTime = this.lastCommandTime.get(userId) || 0;
+      const timeDiff = now - lastTime;
+      
+      if (timeDiff < 5000) { // 5 seconds cooldown
+        console.log(`⏰ Rate limit: User ${userId} must wait ${Math.ceil((5000 - timeDiff) / 1000)}s`);
+        return;
+      }
+      
+      this.lastCommandTime.set(userId, now);
       
       if (command && this.commands[command]) {
         await this.commands[command](context);
