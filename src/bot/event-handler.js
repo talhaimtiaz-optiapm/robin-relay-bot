@@ -4,10 +4,12 @@
  */
 
 const PRHandler = require('./pr-handler');
+const CommentHandler = require('./comment-handler');
 
 class EventHandler {
   constructor() {
     this.prHandler = new PRHandler();
+    this.commentHandler = new CommentHandler();
   }
 
   /**
@@ -19,6 +21,9 @@ class EventHandler {
 
     // Handle pull request events
     this.handlePullRequestEvents(app);
+
+    // Handle comment events
+    this.handleCommentEvents(app);
 
     // Handle installation events
     this.handleInstallationEvents(app);
@@ -44,6 +49,29 @@ class EventHandler {
     });
 
     console.log(`📋 Registered handlers for: ${events.join(', ')}`);
+  }
+
+  /**
+   * Handle comment events
+   */
+  handleCommentEvents(app) {
+    app.on('issue_comment.created', async (context) => {
+      try {
+        await this.commentHandler.handleComment(context);
+      } catch (error) {
+        console.error('❌ Error in comment handler:', error);
+      }
+    });
+
+    app.on('pull_request_review_comment.created', async (context) => {
+      try {
+        await this.commentHandler.handleComment(context);
+      } catch (error) {
+        console.error('❌ Error in review comment handler:', error);
+      }
+    });
+
+    console.log('📋 Registered comment event handlers');
   }
 
   /**

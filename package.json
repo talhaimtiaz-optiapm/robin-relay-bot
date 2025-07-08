@@ -1,7 +1,7 @@
 {
   "name": "robinrelay-bot",
   "version": "1.0.0",
-  "description": "A GitHub App built with Probot that listens for pull request events",
+  "description": "A powerful GitHub App built with Probot that provides automated PR review functionality with interactive comment commands",
   "main": "src/app.js",
   "scripts": {
     "start": "probot run src/app.js",
