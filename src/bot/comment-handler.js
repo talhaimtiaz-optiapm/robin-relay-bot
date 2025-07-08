@@ -34,11 +34,15 @@ class CommentHandler {
     }
 
     // Prevent infinite loop by ignoring bot's own comments
-    // Check if the comment is from the bot itself or if it's a bot response
-    if (payload.comment.user.login === payload.sender.login || 
-        payload.comment.user.type === 'Bot' ||
-        payload.comment.body.includes('🤖') && payload.comment.body.includes('RobinRelay Bot')) {
-      console.log('🤖 Ignoring bot\'s own comment to prevent infinite loop');
+    // Check if the comment is from the bot itself
+    const commentAuthor = payload.comment.user.login;
+    const isBotComment = payload.comment.user.type === 'Bot' || 
+                        commentAuthor.includes('bot') ||
+                        commentAuthor === 'robin-relay-bot' ||
+                        commentAuthor === 'robinrelay-bot';
+    
+    if (isBotComment) {
+      console.log(`🤖 Ignoring bot's own comment from ${commentAuthor}`);
       return;
     }
 
