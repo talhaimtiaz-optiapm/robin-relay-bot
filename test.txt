@@ -1,3 +1,0 @@
-This is a test file for the RobinRelay Bot.
-
-When you create a pull request that modifies this file, the bot should log the PR information. 

@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "probot run src/app.js",
-    "dev": "probot run src/app.js",
+    "dev": "npx probot run ./src/app.js",
     "test": "node scripts/test-webhook-curl.sh"
   },
   "dependencies": {
