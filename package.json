@@ -1,0 +1,28 @@
+{
+  "name": "robinrelay-bot",
+  "version": "1.0.0",
+  "description": "A GitHub App built with Probot that listens for pull request events",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "probot run src/app.js",
+    "dev": "probot run src/app.js",
+    "test": "node scripts/test-webhook-curl.sh"
+  },
+  "dependencies": {
+    "probot": "^13.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "smee-client": "^1.2.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "github-app",
+    "probot",
+    "webhooks"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+} 
