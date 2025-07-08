@@ -5,8 +5,10 @@ A powerful GitHub App built with Probot that provides automated pull request rev
 ## ✨ Features
 
 - **Automated PR Review**: Automatically processes pull requests when they're opened, synchronized, or reopened
+- **Interactive Comments**: Users can interact with the bot through PR comments using commands
 - **Visual Feedback**: Adds eyes reaction and posts comments with loading spinners
 - **Check Runs**: Creates and updates GitHub check runs to show review status
+- **Multiple Commands**: Support for analyze, review, test, lint, security scan, and more
 - **Modular Architecture**: Clean, maintainable code structure with separate handlers
 - **Error Handling**: Comprehensive error handling and logging
 - **Easy Setup**: Simple configuration with environment variables
@@ -89,7 +91,8 @@ robin-relay-bot/
 │   ├── app.js                 # Main application entry point
 │   └── bot/
 │       ├── event-handler.js   # Event routing and management
-│       └── pr-handler.js      # Pull request processing logic
+│       ├── pr-handler.js      # Pull request processing logic
+│       └── comment-handler.js # Interactive comment commands
 ├── test-repo/                 # Test repository for development
 ├── scripts/                   # Utility scripts
 ├── .env.example              # Environment variables template
@@ -139,12 +142,33 @@ When a pull request is opened, you should see:
 
 ## 🔄 Bot Workflow
 
+### Automated PR Processing
 1. **PR Opened**: Bot detects new pull request
 2. **Reaction**: Adds 👀 eyes reaction
 3. **Comment**: Posts initial comment with loading spinner
 4. **Check Run**: Creates in-progress check run
 5. **Analysis**: Performs review analysis (extensible)
 6. **Completion**: Updates check run and comment with results
+
+### Interactive Commands
+Users can interact with the bot by mentioning it in PR comments:
+
+**📋 Available Commands:**
+- `@robin-relay-bot help` - Show available commands
+- `@robin-relay-bot analyze` - Perform comprehensive code analysis
+- `@robin-relay-bot review` - Perform detailed code review
+- `@robin-relay-bot status` - Show current PR status
+- `@robin-relay-bot test` - Run automated tests
+- `@robin-relay-bot lint` - Run linting checks
+- `@robin-relay-bot security` - Perform security scan
+- `@robin-relay-bot dependencies` - Check dependency vulnerabilities
+
+**💡 Example Usage:**
+```
+@robin-relay-bot analyze
+@robin-relay-bot security
+@robin-relay-bot help
+```
 
 ## 🛠️ Development
 
