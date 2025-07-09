@@ -1,11 +1,12 @@
 # RobinRelay Bot 🤖
 
-A powerful GitHub App built with Probot that provides automated pull request review functionality. The bot automatically reacts to PRs, creates check runs, and provides feedback to developers.
+A powerful GitHub App built with Probot that provides automated pull request review functionality with Slack integration. The bot automatically reacts to PRs, creates check runs, and provides feedback to developers through both GitHub and Slack.
 
 ## ✨ Features
 
 - **Automated PR Review**: Automatically processes pull requests when they're opened, synchronized, or reopened
 - **Interactive Comments**: Users can interact with the bot through PR comments using commands
+- **Slack Integration**: Full GitHub operations through Slack commands and mentions
 - **Visual Feedback**: Adds eyes reaction and posts comments with loading spinners
 - **Check Runs**: Creates and updates GitHub check runs to show review status
 - **Multiple Commands**: Support for analyze, review, test, lint, security scan, and more
@@ -57,6 +58,11 @@ APP_ID=your_github_app_id
 WEBHOOK_SECRET=your_webhook_secret
 PRIVATE_KEY_PATH=./path/to/your/private-key.pem
 NODE_ENV=development
+
+# Slack App Configuration (Optional)
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
+SLACK_SIGNING_SECRET=your-slack-signing-secret
+SLACK_APP_TOKEN=xapp-your-slack-app-token
 ```
 
 ### GitHub App Setup
@@ -89,13 +95,16 @@ NODE_ENV=development
 robin-relay-bot/
 ├── src/
 │   ├── app.js                 # Main application entry point
-│   └── bot/
-│       ├── event-handler.js   # Event routing and management
-│       ├── pr-handler.js      # Pull request processing logic
-│       └── comment-handler.js # Interactive comment commands
+│   ├── bot/
+│   │   ├── event-handler.js   # Event routing and management
+│   │   ├── pr-handler.js      # Pull request processing logic
+│   │   └── comment-handler.js # Interactive comment commands
+│   └── slack/
+│       ├── slack-bot.js       # Slack bot configuration and handlers
+│       └── github-service.js  # GitHub operations for Slack
 ├── test-repo/                 # Test repository for development
 ├── scripts/                   # Utility scripts
-├── .env.example              # Environment variables template
+├── env.example               # Environment variables template
 ├── package.json              # Dependencies and scripts
 └── README.md                 # This file
 ```
@@ -151,6 +160,75 @@ When a pull request is opened, you should see:
 6. **Completion**: Updates check run and comment with results
 
 ### Interactive Commands
+Users can interact with the bot by mentioning it in PR comments:
+
+**📋 Available Commands:**
+- `@robin-relay-bot help` - Show available commands
+- `@robin-relay-bot analyze` - Perform comprehensive code analysis
+- `@robin-relay-bot review` - Perform detailed code review
+- `@robin-relay-bot status` - Show current PR status
+- `@robin-relay-bot test` - Run automated tests
+- `@robin-relay-bot lint` - Run linting checks
+- `@robin-relay-bot security` - Perform security scan
+- `@robin-relay-bot dependencies` - Check dependency vulnerabilities
+
+**💡 Example Usage:**
+```
+@robin-relay-bot analyze
+@robin-relay-bot security
+@robin-relay-bot help
+```
+
+## 💬 Slack Integration
+
+### Setup
+
+1. **Create a Slack App** at [api.slack.com/apps](https://api.slack.com/apps)
+2. **Configure OAuth & Permissions**:
+   - Add bot token scopes: `app_mentions:read`, `chat:write`, `commands`
+   - Add user token scopes: `chat:write`
+3. **Enable Socket Mode** for local development
+4. **Add environment variables** to your `.env` file:
+   ```env
+   SLACK_BOT_TOKEN=xoxb-your-bot-token
+   SLACK_SIGNING_SECRET=your-signing-secret
+   SLACK_APP_TOKEN=xapp-your-app-token
+   ```
+
+### Usage
+
+The bot responds to:
+- **App mentions**: `@robin-relay-bot hello`
+- **Direct messages**: Send any command directly to the bot
+- **Slash commands**: `/robin-relay analyze my-repo 123`
+
+### Available Slack Commands
+
+**🔧 Basic Commands:**
+- `hello` - Greet the bot
+- `help` - Show available commands
+
+**📊 GitHub Operations:**
+- `analyze [repo] [pr#]` - Analyze code in a PR
+- `list branches [repo]` - List all branches
+- `create pr [from] [to] [title]` - Create a pull request
+- `edit [file] [content]` - Edit a file
+
+**🧪 Code Quality:**
+- `test [repo]` - Run tests
+- `lint [repo]` - Run linting
+- `security [repo]` - Security analysis
+- `dependencies [repo]` - Check dependencies
+
+**💡 Examples:**
+```
+@robin-relay-bot analyze my-repo 123
+@robin-relay-bot list branches my-repo
+@robin-relay-bot create pr dev main "New feature"
+@robin-relay-bot edit README.md "Updated introduction"
+```
+
+### GitHub Interactive Commands
 Users can interact with the bot by mentioning it in PR comments:
 
 **📋 Available Commands:**
